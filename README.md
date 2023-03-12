@@ -13,7 +13,7 @@ composer require andrewtweber/laravel-roles
 If you want to change the config, run:
 
 ```
-php artisan vendor:publish --provider="Roles\SnaccsServiceProvider"
+php artisan vendor:publish --provider="Roles\RolesServiceProvider"
 ```
 
 This will publish the file `config/roles.php`.

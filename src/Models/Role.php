@@ -44,6 +44,6 @@ class Role extends Model implements HasPermissionsInterface
      */
     public function users(): HasMany
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(config('roles.models.user'));
     }
 }

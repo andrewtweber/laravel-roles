@@ -30,7 +30,7 @@ You can register the middleware in your Http Kernel:
 
 ```php
 protected $routeMiddleware = [
-    'permission'       => \Roles\Http\Middleware\Permission::class,
+    'permission' => \Roles\Http\Middleware\Permission::class,
 ];
 ```
 
@@ -46,6 +46,10 @@ class MyController extends Controller
     }
 }
 ```
+
+### Laravel Nova
+
+If you have Laravel Nova, copy the `src/Nova/*.stub` files into your Nova models directory and modify as necessary.
 
 ## Testing
 

@@ -1,0 +1,48 @@
+{
+    "name": "andrewtweber/laravel-roles",
+    "type": "library",
+    "description": "Roles and permissions for Laravel",
+    "keywords": [
+        "laravel",
+        "helpers",
+        "permissions",
+        "roles",
+        "traits"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrew Weber",
+            "homepage": "https://andrew.cool"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "laravel/framework": "^8.12|^9.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.17",
+        "phpunit/phpunit": "^9"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Roles\\": "src/",
+            "Roles\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Roles\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Roles\\RolesServiceProvider"
+            ]
+        }
+    }
+}

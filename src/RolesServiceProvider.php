@@ -18,10 +18,12 @@ class RolesServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $migrations = realpath(__DIR__ . '/../database/migrations');
         $roles = realpath(__DIR__ . '/../config/roles.php');
 
         if ($this->app instanceof LaravelApplication) {
             $this->publishes([
+                $migrations => database_path('migrations'),
                 $roles => config_path('roles.php'),
             ]);
         } elseif ($this->app instanceof LumenApplication) {

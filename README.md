@@ -56,3 +56,8 @@ If you have Laravel Nova, copy the `src/Nova/*.stub` files into your Nova models
 ```
 phpunit
 ```
+
+## TODO
+
+* Permissions scope tests currently not passing
+* Support a `Permission` model instead of just enum

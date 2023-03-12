@@ -3,7 +3,6 @@
 namespace Roles\Database\Factories;
 
 use Roles\Models\Role;
-use App\Support\Enums\Permission;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

@@ -2,13 +2,13 @@
 
 namespace Roles\Models;
 
-use App\Models\Traits\HasPermissions;
-use App\Models\Traits\NovaModel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Roles\HasPermissions;
+use Roles\HasPermissionsInterface;
 
 /**
  * Class Role
@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property Collection|User[] users
  */
-class Role extends Model
+class Role extends Model implements HasPermissionsInterface
 {
     use HasFactory, HasPermissions;
 

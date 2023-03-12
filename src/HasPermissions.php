@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Models\Traits;
+namespace Roles;
 
-use App\Support\Enums\Permission;
-use App\Support\Permissions\AllPermissions;
-use App\Support\Permissions\AnyPermission;
+use Roles\Support\AllPermissions;
+use Roles\Support\AnyPermission;
 use Illuminate\Database\Eloquent\Builder;
 use InvalidArgumentException;
 
 /**
  * Trait HasPermissions
  *
- * @package App\Models\Traits
+ * @package Roles
  */
 trait HasPermissions
 {

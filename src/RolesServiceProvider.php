@@ -6,8 +6,6 @@ use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Lumen\Application as LumenApplication;
 
-use Illuminate\Foundation\Application as LaravelApplication;
-
 /**
  * Class RolesServiceProvider
  *
@@ -20,9 +18,7 @@ class RolesServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $formatting = realpath(__DIR__ . '/../../config/formatting.php');
-        $system = realpath(__DIR__ . '/../../config/system.php');
-        $views = realpath(__DIR__ . '/../../resources/views');
+        $roles = realpath(__DIR__ . '/../config/roles.php');
 
         if ($this->app instanceof LaravelApplication) {
             $this->publishes([

@@ -2,7 +2,6 @@
 
 namespace Roles\Tests;
 
-use App\Models\User;
 use App\Support\Enums\Permission;
 use Roles\Models\Role;
 use InvalidArgumentException;

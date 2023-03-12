@@ -23,3 +23,32 @@ This will publish the file `config/roles.php`.
 Update your User model to implement the `HasPermissionsInterface` and use the `HasPermissions` trait.
 
 Also add the `BelongsTo` relationship to the `Role` model.
+
+### Middleware
+
+You can register the middleware in your Http Kernel:
+
+```php
+protected $routeMiddleware = [
+    'permission'       => \Roles\Http\Middleware\Permission::class,
+];
+```
+
+Then you can guard routes with `Route::middleware('permission:{name}')`. This only works when checking
+for a single permission though, if you need to check for multiple permissions, you'll have to add it to the
+controller's constructor:
+
+```php
+class MyController extends Controller
+{
+    public function __construct() {
+        $this->middleware();
+    }
+}
+```
+
+## Testing
+
+```
+phpunit
+```

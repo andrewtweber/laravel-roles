@@ -41,7 +41,7 @@ trait HasPermissions
             $permission = $permission->value;
         }
 
-        return $this->getRole()->permissions === [$permission];
+        return $this->getRole()?->permissions === [$permission];
     }
 
     /**
@@ -51,6 +51,11 @@ trait HasPermissions
      */
     public function hasPermission(mixed $permission): bool
     {
+        // No role assigned
+        if (! $this->getRole()) {
+            return false;
+        }
+
         // Super admin
         if (in_array('*', $this->getRole()->permissions)) {
             return true;
@@ -117,6 +122,11 @@ trait HasPermissions
      */
     protected function hasSinglePermission(PermissionInterface|string $permission): bool
     {
+        // No role assigned
+        if (! $this->getRole()) {
+            return false;
+        }
+
         if (in_array('*', $this->getRole()->permissions)) {
             return true;
         }
@@ -133,7 +143,7 @@ trait HasPermissions
      */
     public function hasNoPermissions(): bool
     {
-        return $this->getRole()->permissions === [];
+        return $this->getRole()?->permissions === [];
     }
 
     /**
@@ -141,6 +151,6 @@ trait HasPermissions
      */
     public function isSuper(): bool
     {
-        return $this->getRole()->permissions === ['*'];
+        return $this->getRole()?->permissions === ['*'];
     }
 }

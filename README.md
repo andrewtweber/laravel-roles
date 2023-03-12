@@ -20,9 +20,9 @@ This will publish the file `config/roles.php`.
 
 ## Usage
 
-Update your User model to implement the `HasPermissionsInterface` and use the `HasPermissions` trait.
+Update your User model to implement the `HasPermissionsInterface` and use the `HasPermissions` and `HasRole` traits.
 
-Also add the `BelongsTo` relationship to the `Role` model.
+To create a "Super User" role, just give it all permissions: `["*"]`
 
 ### Middleware
 
@@ -61,3 +61,4 @@ phpunit
 
 * Permissions scope tests currently not passing
 * Support a `Permission` model instead of just enum
+* Configure a default role

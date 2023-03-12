@@ -3,6 +3,7 @@
 namespace Roles;
 
 use Illuminate\Database\Eloquent\Builder;
+use Roles\Models\Role;
 use Roles\Support\PermissionInterface;
 
 /**
@@ -12,6 +13,11 @@ use Roles\Support\PermissionInterface;
  */
 interface HasPermissionsInterface
 {
+    /**
+     * @return Role|null
+     */
+    public function getRole(): ?Role;
+
     /**
      * @param Builder                         $query
      * @param PermissionInterface|string|null $permission

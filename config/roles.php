@@ -28,6 +28,7 @@ return [
     | class here.
     */
     'models' => [
+        'role' => \Role\Models\Role::class,
         'user' => \App\Models\User::class,
     ],
 

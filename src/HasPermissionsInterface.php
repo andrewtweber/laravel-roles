@@ -3,6 +3,7 @@
 namespace Roles;
 
 use Illuminate\Database\Eloquent\Builder;
+use Roles\Support\PermissionInterface;
 
 /**
  * Interface HasPermissionsInterface
@@ -12,17 +13,17 @@ use Illuminate\Database\Eloquent\Builder;
 interface HasPermissionsInterface
 {
     /**
-     * @param Builder                $query
-     * @param Permission|string|null $permission
+     * @param Builder                         $query
+     * @param PermissionInterface|string|null $permission
      */
-    public function scopeWithPermission(Builder $query, Permission|string|null $permission);
+    public function scopeWithPermission(Builder $query, PermissionInterface|string|null $permission);
 
     /**
-     * @param Permission|string $permission
+     * @param PermissionInterface|string $permission
      *
      * @return bool
      */
-    public function onlyPermissionIs(mixed $permission): bool;
+    public function onlyPermissionIs(PermissionInterface|string $permission): bool;
 
     /**
      * @param mixed $permission

@@ -2,7 +2,6 @@
 
 namespace Roles\Tests;
 
-use App\Support\Enums\Permission;
 use Illuminate\Support\Facades\Config;
 use Roles\Models\Role;
 use InvalidArgumentException;
@@ -18,6 +17,7 @@ class PermissionTest extends TestCase
     {
         parent::setUp();
 
+        Config::set('roles.providers.enum.class', Permission::class);
         Config::set('roles.models.user', User::class);
     }
 

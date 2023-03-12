@@ -6,6 +6,7 @@ use Roles\Support\AllPermissions;
 use Roles\Support\AnyPermission;
 use Illuminate\Database\Eloquent\Builder;
 use InvalidArgumentException;
+use Roles\Support\PermissionInterface;
 
 /**
  * Trait HasPermissions
@@ -15,28 +16,28 @@ use InvalidArgumentException;
 trait HasPermissions
 {
     /**
-     * @param Builder                $query
-     * @param Permission|string|null $permission
+     * @param Builder                         $query
+     * @param PermissionInterface|string|null $permission
      */
-    public function scopeWithPermission(Builder $query, Permission|string|null $permission)
+    public function scopeWithPermission(Builder $query, PermissionInterface|string|null $permission)
     {
         if (! isset($permission)) {
             return;
         }
 
-        $permission = $permission instanceof Permission ? $permission->value : $permission;
+        $permission = $permission instanceof PermissionInterface ? $permission->value : $permission;
 
         $query->whereRaw('JSON_OVERLAPS(roles.permissions, \'["*", "' . $permission . '"]\')');
     }
 
     /**
-     * @param Permission|string $permission
+     * @param PermissionInterface|string $permission
      *
      * @return bool
      */
-    public function onlyPermissionIs(mixed $permission): bool
+    public function onlyPermissionIs(PermissionInterface|string $permission): bool
     {
-        if ($permission instanceof Permission) {
+        if ($permission instanceof PermissionInterface) {
             $permission = $permission->value;
         }
 
@@ -55,7 +56,7 @@ trait HasPermissions
             return true;
         }
 
-        if ($permission instanceof Permission) {
+        if ($permission instanceof PermissionInterface) {
             $permission = $permission->value;
         }
 
@@ -110,17 +111,17 @@ trait HasPermissions
     }
 
     /**
-     * @param Permission|string $permission
+     * @param PermissionInterface|string $permission
      *
      * @return bool
      */
-    protected function hasSinglePermission(mixed $permission): bool
+    protected function hasSinglePermission(PermissionInterface|string $permission): bool
     {
         if (in_array('*', $this->getRole()->permissions)) {
             return true;
         }
 
-        if ($permission instanceof Permission) {
+        if ($permission instanceof PermissionInterface) {
             $permission = $permission->value;
         }
 

@@ -2,6 +2,23 @@
 
 return [
 
+    'default' => 'enum',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Providers
+    |--------------------------------------------------------------------------
+    |
+    | The Permission provider. In the future will allow a Permission model,
+    | for now only enums are supported. Your enum class must implement the
+    | PermissionInterface interface.
+    */
+    'providers' => [
+        'enum' => [
+            'class' => \App\Support\Enums\Permission::class,
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Models

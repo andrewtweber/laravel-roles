@@ -3,12 +3,14 @@
 namespace Roles\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Roles\HasPermissions;
 use Roles\HasPermissionsInterface;
+use Roles\Support\PermissionInterface;
 
 /**
  * Class Role
@@ -45,5 +47,20 @@ class Role extends Model implements HasPermissionsInterface
     public function users(): HasMany
     {
         return $this->hasMany(config('roles.models.user'));
+    }
+
+    /**
+     * @param Builder                         $query
+     * @param PermissionInterface|string|null $permission
+     */
+    public function scopeWithPermission(Builder $query, PermissionInterface|string|null $permission)
+    {
+        if (! isset($permission)) {
+            return;
+        }
+
+        $permission = $permission instanceof PermissionInterface ? $permission->value : $permission;
+
+        $query->whereRaw('JSON_OVERLAPS(roles.permissions, \'["*", "' . $permission . '"]\')');
     }
 }

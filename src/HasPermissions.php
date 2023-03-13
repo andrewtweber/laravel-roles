@@ -4,7 +4,6 @@ namespace Roles;
 
 use Roles\Support\AllPermissions;
 use Roles\Support\AnyPermission;
-use Illuminate\Database\Eloquent\Builder;
 use InvalidArgumentException;
 use Roles\Support\PermissionInterface;
 
@@ -15,21 +14,6 @@ use Roles\Support\PermissionInterface;
  */
 trait HasPermissions
 {
-    /**
-     * @param Builder                         $query
-     * @param PermissionInterface|string|null $permission
-     */
-    public function scopeWithPermission(Builder $query, PermissionInterface|string|null $permission)
-    {
-        if (! isset($permission)) {
-            return;
-        }
-
-        $permission = $permission instanceof PermissionInterface ? $permission->value : $permission;
-
-        $query->whereRaw('JSON_OVERLAPS(roles.permissions, \'["*", "' . $permission . '"]\')');
-    }
-
     /**
      * @param PermissionInterface|string $permission
      *

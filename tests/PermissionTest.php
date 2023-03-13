@@ -123,6 +123,7 @@ class PermissionTest extends TestCase
         $role->permissions = ['*'];
 
         $this->assertTrue($role->isSuper());
+        $this->assertTrue($role->hasPermission('*'));
         $this->assertFalse($role->onlyPermissionIs(Permission::Shelter));
         $this->assertTrue($role->hasPermission(Permission::Shelter));
         $this->assertTrue($role->hasPermission(Permission::Admin));
@@ -142,6 +143,7 @@ class PermissionTest extends TestCase
         $role->permissions = [Permission::Shelter];
 
         $this->assertFalse($role->isSuper());
+        $this->assertFalse($role->hasPermission('*'));
         $this->assertTrue($role->onlyPermissionIs(Permission::Shelter));
         $this->assertTrue($role->hasPermission(Permission::Shelter));
         $this->assertFalse($role->hasPermission(Permission::Admin));
@@ -161,6 +163,7 @@ class PermissionTest extends TestCase
         $role->permissions = [Permission::Shelter, Permission::Admin];
 
         $this->assertFalse($role->isSuper());
+        $this->assertFalse($role->hasPermission('*'));
         $this->assertFalse($role->onlyPermissionIs(Permission::Shelter));
         $this->assertTrue($role->hasPermission(Permission::Shelter));
         $this->assertTrue($role->hasPermission(Permission::Admin));
@@ -180,6 +183,7 @@ class PermissionTest extends TestCase
         $role->permissions = [];
 
         $this->assertFalse($role->isSuper());
+        $this->assertFalse($role->hasPermission('*'));
         $this->assertFalse($role->onlyPermissionIs(Permission::Shelter));
         $this->assertFalse($role->hasPermission(Permission::Shelter));
         $this->assertFalse($role->hasPermission(Permission::Admin));
@@ -188,6 +192,127 @@ class PermissionTest extends TestCase
         $this->assertFalse($role->hasPermission(Permission::any([Permission::Shelter, Permission::Admin])));
         $this->assertFalse($role->hasAnyPermission([Permission::Shelter, Permission::Admin]));
         $this->assertTrue($role->hasNoPermissions());
+    }
+
+    /**
+     * @test
+     */
+    public function wildcard_permissions_work()
+    {
+        // Permission is assigned without wildcard
+        // It does not automatically inherit child permissions
+        $role = new Role();
+        $role->permissions = ['forums'];
+
+        $this->assertTrue($role->hasPermission('forums'));
+        $this->assertFalse($role->hasPermission('forums.*'));
+        $this->assertFalse($role->hasPermission(Permission::Forums)); // equivalent to forums.*
+        $this->assertFalse($role->hasPermission(Permission::LockForum));
+        $this->assertFalse($role->hasPermission(Permission::PinForum));
+        $this->assertFalse($role->hasPermission(Permission::ReplyForum));
+        $this->assertFalse($role->hasPermission('forums.threads'));
+        $this->assertFalse($role->hasPermission('forums.threads.*'));
+        $this->assertFalse($role->hasPermission(Permission::Threads)); // equivalent to forums.threads.*
+        $this->assertFalse($role->hasPermission(Permission::LockThread));
+        $this->assertFalse($role->hasPermission(Permission::PinThread));
+        $this->assertFalse($role->hasPermission(Permission::ReplyThread));
+        $this->assertFalse($role->hasPermission('forums.users'));
+        $this->assertFalse($role->hasPermission('forums.users.*'));
+        $this->assertFalse($role->hasPermission(Permission::Users)); // equivalent to forums.users.*
+        $this->assertFalse($role->hasPermission(Permission::BanUser));
+        $this->assertFalse($role->hasPermission(Permission::BlockUser));
+
+        // Permission is assigned with top level wildcard
+        // It inherits all child and grandchild permissions
+        $role = new Role();
+        $role->permissions = [Permission::Forums]; // forums.*
+
+        $this->assertTrue($role->hasPermission('forums'));
+        $this->assertTrue($role->hasPermission('forums.*'));
+        $this->assertTrue($role->hasPermission(Permission::Forums)); // equivalent to forums.*
+        $this->assertTrue($role->hasPermission(Permission::LockForum));
+        $this->assertTrue($role->hasPermission(Permission::PinForum));
+        $this->assertTrue($role->hasPermission(Permission::ReplyForum));
+        $this->assertTrue($role->hasPermission('forums.threads'));
+        $this->assertTrue($role->hasPermission('forums.threads.*'));
+        $this->assertTrue($role->hasPermission(Permission::Threads)); // equivalent to forums.threads.*
+        $this->assertTrue($role->hasPermission(Permission::LockThread));
+        $this->assertTrue($role->hasPermission(Permission::PinThread));
+        $this->assertTrue($role->hasPermission(Permission::ReplyThread));
+        $this->assertTrue($role->hasPermission('forums.users'));
+        $this->assertTrue($role->hasPermission('forums.users.*'));
+        $this->assertTrue($role->hasPermission(Permission::Users)); // equivalent to forums.users.*
+        $this->assertTrue($role->hasPermission(Permission::BanUser));
+        $this->assertTrue($role->hasPermission(Permission::BlockUser));
+
+        // Permission is assigned with child wildcard
+        // It inherits all grandchild permissions
+        $role = new Role();
+        $role->permissions = [Permission::Threads]; // forums.threads.*
+
+        $this->assertFalse($role->hasPermission('forums'));
+        $this->assertFalse($role->hasPermission('forums.*'));
+        $this->assertFalse($role->hasPermission(Permission::Forums)); // equivalent to forums.*
+        $this->assertFalse($role->hasPermission(Permission::LockForum));
+        $this->assertFalse($role->hasPermission(Permission::PinForum));
+        $this->assertFalse($role->hasPermission(Permission::ReplyForum));
+        $this->assertTrue($role->hasPermission('forums.threads'));
+        $this->assertTrue($role->hasPermission('forums.threads.*'));
+        $this->assertTrue($role->hasPermission(Permission::Threads)); // equivalent to forums.threads.*
+        $this->assertTrue($role->hasPermission(Permission::LockThread));
+        $this->assertTrue($role->hasPermission(Permission::PinThread));
+        $this->assertTrue($role->hasPermission(Permission::ReplyThread));
+        $this->assertFalse($role->hasPermission('forums.users'));
+        $this->assertFalse($role->hasPermission('forums.users.*'));
+        $this->assertFalse($role->hasPermission(Permission::Users)); // equivalent to forums.users.*
+        $this->assertFalse($role->hasPermission(Permission::BanUser));
+        $this->assertFalse($role->hasPermission(Permission::BlockUser));
+
+        // Permission is assigned with grandchild
+        // It does not inherit anything
+        $role = new Role();
+        $role->permissions = [Permission::LockThread]; // forums.threads.lock
+
+        $this->assertFalse($role->hasPermission('forums'));
+        $this->assertFalse($role->hasPermission('forums.*'));
+        $this->assertFalse($role->hasPermission(Permission::Forums)); // equivalent to forums.*
+        $this->assertFalse($role->hasPermission(Permission::LockForum));
+        $this->assertFalse($role->hasPermission(Permission::PinForum));
+        $this->assertFalse($role->hasPermission(Permission::ReplyForum));
+        $this->assertFalse($role->hasPermission('forums.threads'));
+        $this->assertFalse($role->hasPermission('forums.threads.*'));
+        $this->assertFalse($role->hasPermission(Permission::Threads)); // equivalent to forums.threads.*
+        $this->assertTrue($role->hasPermission(Permission::LockThread));
+        $this->assertFalse($role->hasPermission(Permission::PinThread));
+        $this->assertFalse($role->hasPermission(Permission::ReplyThread));
+        $this->assertFalse($role->hasPermission('forums.users'));
+        $this->assertFalse($role->hasPermission('forums.users.*'));
+        $this->assertFalse($role->hasPermission(Permission::Users)); // equivalent to forums.users.*
+        $this->assertFalse($role->hasPermission(Permission::BanUser));
+        $this->assertFalse($role->hasPermission(Permission::BlockUser));
+
+        // Permission is assigned with multiple child wildcards
+        // It inherits grandchild permissions for both children
+        $role = new Role();
+        $role->permissions = ['forums.threads.*', 'forums.users.*'];
+
+        $this->assertFalse($role->hasPermission('forums'));
+        $this->assertFalse($role->hasPermission('forums.*'));
+        $this->assertFalse($role->hasPermission(Permission::Forums)); // equivalent to forums.*
+        $this->assertFalse($role->hasPermission(Permission::LockForum));
+        $this->assertFalse($role->hasPermission(Permission::PinForum));
+        $this->assertFalse($role->hasPermission(Permission::ReplyForum));
+        $this->assertTrue($role->hasPermission('forums.threads'));
+        $this->assertTrue($role->hasPermission('forums.threads.*'));
+        $this->assertTrue($role->hasPermission(Permission::Threads)); // equivalent to forums.threads.*
+        $this->assertTrue($role->hasPermission(Permission::LockThread));
+        $this->assertTrue($role->hasPermission(Permission::PinThread));
+        $this->assertTrue($role->hasPermission(Permission::ReplyThread));
+        $this->assertTrue($role->hasPermission('forums.users'));
+        $this->assertTrue($role->hasPermission('forums.users.*'));
+        $this->assertTrue($role->hasPermission(Permission::Users)); // equivalent to forums.users.*
+        $this->assertTrue($role->hasPermission(Permission::BanUser));
+        $this->assertTrue($role->hasPermission(Permission::BlockUser));
     }
 
     /**

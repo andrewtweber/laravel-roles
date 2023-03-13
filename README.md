@@ -22,7 +22,77 @@ This will publish the file `config/roles.php`.
 
 Update your User model to implement the `HasPermissionsInterface` and use the `HasPermissions` and `HasRole` traits.
 
-To create a "Super User" role, just give it all permissions: `["*"]`
+### Defining permissions
+
+You should create a `Permission` enum backed by strings (see the one in the `tests` folder for an example) which
+implements the `PermissionInterface` and uses the `PermissionTrait`.
+
+You can define any permissions you like, including nested permissions:
+
+```php
+enum Permission: string implements PermissionInterface
+{
+    use PermissionTrait;
+    
+    case Admin = 'admin';
+    
+    case BanUser = 'users.ban';
+    case DeleteUser = 'users.delete';
+    
+    // You don't have to define a wildcard permission but if you plan on checking for them,
+    // it's recommended so that you can always check for an enum value.
+    case Forums = 'forums.*';
+    case LockForum = 'forums.lock';
+    case DeleteThread = 'forums.threads.delete';
+    case LockThread = 'forums.threads.lock';
+}
+```
+
+After that you should define roles. The permissions can contain wildcards, but they need to be explicitly set as such.
+
+```php
+$role = new Role();
+$role->permissions = ["*"]; // Superuser, will have all permissions
+$role->permissions = ["admin"]; // Will only have Permission::Admin
+$role->permissions = ["users.*"];  // Will have Permission::BanUser and Permission::DeleteUser
+$role->permissions = ["forums.*"]; // Will have Permission::LockForum, Permission::DeleteThread, and Permission::LockThread
+$role->permissions = ["forums.threads.*"]; // Will only have Permission::LockThread
+$role->permissions = ["users"]; // Will have no permissions. Wildcards have to be set explicitly, to prevent mistakes
+```
+
+Here are some of the ways you can check for permissions:
+
+
+```php
+$role = new Role();
+$role->hasNoPermissions(); // true
+
+$role->permissions = ["*"];
+$role->isSuper(); // true
+
+$role->permissions = ["forums.*"];
+$role->isSuper(); // false
+
+// Checking for a single permission
+$role->hasPermission('undefined'); // false
+$role->hasPermission(Permission::Admin); // false
+$role->onlyPermissionIs(Permission::LockForum); // false
+$role->hasPermission(Permission::LockForum); // true
+$role->hasPermission(Permission::LockThread); // true
+
+// Checking for wildcard permissions
+$role->hasPermission('forums'); // true
+$role->hasPermission('forums.*'); // true
+$role->hasPermission(Permission::Forums); // true
+$role->hasPermission('forums.threads'); // true
+$role->hasPermission('forums.threads.*'); // true
+
+// Checking for multiple permissions
+$role->hasPermission(Permission::all([Permission::BanUser, Permission::LockThread])); // false
+$role->hasAllPermissions([Permission::BanUser, Permission::LockThread]); // false, Equivalent to previous line
+$role->hasPermission(Permission::any([Permission::BanUser, Permission::LockThread])); // true
+$role->hasAnyPermission([Permission::BanUser, Permission::LockThread]); // true, Equivalent to previous line
+```
 
 ### Middleware
 

@@ -135,7 +135,22 @@ trait HasPermissions
             $permission = $permission->value;
         }
 
-        return in_array($permission, $this->getRole()->permissions);
+        $permissions = [$permission];
+        $parts = explode('.', $permission);
+
+        if (last($parts) === '*') {
+            $permissions = [];
+            array_pop($parts);
+        }
+        $permission = '';
+
+        for ($i = 0; $i < count($parts); $i++) {
+            $permission .= $parts[$i] . '.';
+
+            $permissions[] = $permission . '*';
+        }
+
+        return count(array_intersect($permissions, $this->getRole()->permissions)) > 0;
     }
 
     /**
@@ -143,7 +158,9 @@ trait HasPermissions
      */
     public function hasNoPermissions(): bool
     {
-        return $this->getRole()?->permissions === [];
+        return ! $this->getRole()
+            || $this->getRole()->permissions === null
+            || $this->getRole()->permissions === [];
     }
 
     /**

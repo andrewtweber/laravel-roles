@@ -1,10 +1,13 @@
 # Laravel Roles
 
-CircleCI here
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/andrewtweber/laravel-roles/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/andrewtweber/laravel-roles/tree/master)
 
 ## Installation
 
 Install this package as a dependency using [Composer](https://getcomposer.org).
+
+(This is not actually published yet, as it is in pre-alpha. I do not follow semantic versioning, so use at your own risk)
+
 
 ``` bash
 composer require andrewtweber/laravel-roles

@@ -3,6 +3,7 @@
 namespace Roles\Tests;
 
 use Illuminate\Support\Facades\Config;
+use Roles\Database\Factories\RoleFactory;
 use Roles\Models\Role;
 use InvalidArgumentException;
 
@@ -26,22 +27,22 @@ class PermissionTest extends TestCase
      */
     public function permission_scope_works_on_roles()
     {
-        $role1 = Role::factory()->state([
+        $role1 = RoleFactory::new()->state([
             'name' => 'Test 1',
             'permissions' => ['*'],
         ])->create();
 
-        $role2 = Role::factory()->state([
+        $role2 = RoleFactory::new()->state([
             'name' => 'Test 2',
             'permissions' => [Permission::Shelter],
         ])->create();
 
-        $role3 = Role::factory()->state([
+        $role3 = RoleFactory::new()->state([
             'name' => 'Test 3',
             'permissions' => [Permission::Shelter, Permission::Medical],
         ])->create();
 
-        $role4 = Role::factory()->state([
+        $role4 = RoleFactory::new()->state([
             'name' => 'Test 4',
             'permissions' => [],
         ])->create();
@@ -70,22 +71,22 @@ class PermissionTest extends TestCase
      */
     public function permission_scope_works_on_users()
     {
-        $role1 = Role::factory()->state([
+        $role1 = RoleFactory::new()->state([
             'name' => 'Test 1',
             'permissions' => ['*'],
         ])->create();
 
-        $role2 = Role::factory()->state([
+        $role2 = RoleFactory::new()->state([
             'name' => 'Test 2',
             'permissions' => [Permission::Shelter],
         ])->create();
 
-        $role3 = Role::factory()->state([
+        $role3 = RoleFactory::new()->state([
             'name' => 'Test 3',
             'permissions' => [Permission::Shelter, Permission::Medical],
         ])->create();
 
-        $role4 = Role::factory()->state([
+        $role4 = RoleFactory::new()->state([
             'name' => 'Test 4',
             'permissions' => [],
         ])->create();

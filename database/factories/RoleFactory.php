@@ -4,11 +4,12 @@ namespace Roles\Database\Factories;
 
 use Roles\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Roles\Tests\Permission;
 
 /**
  * Class RoleFactory
  *
- * @package Database\Factories
+ * @package Roles\Database\Factories
  */
 class RoleFactory extends Factory
 {

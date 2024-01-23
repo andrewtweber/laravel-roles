@@ -12,7 +12,7 @@ use InvalidArgumentException;
  *
  * @package Roles\Tests
  */
-class PermissionTest extends TestCase
+class PermissionTest extends LaravelTestCase
 {
     protected function setUp(): void
     {

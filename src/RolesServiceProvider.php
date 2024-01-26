@@ -26,6 +26,7 @@ class RolesServiceProvider extends ServiceProvider
                 $migrations => database_path('migrations'),
                 $roles => config_path('roles.php'),
             ]);
+        /** @phpstan-ignore-next-line */
         } elseif ($this->app instanceof LumenApplication) {
             $this->app->configure('roles');
         }

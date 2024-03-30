@@ -35,6 +35,13 @@ class Role extends Model implements HasPermissionsInterface
         'permissions' => 'json',
     ];
 
+    public function newCollection(array $models = [])
+    {
+        $class = config('roles.collections.role');
+
+        return new $class($models);
+    }
+
     /**
      * @return RoleCollection<Role>
      */

@@ -3,6 +3,7 @@
 namespace Roles;
 
 use Illuminate\Database\Eloquent\Builder;
+use Roles\Collections\RoleCollection;
 use Roles\Models\Role;
 use Roles\Support\PermissionInterface;
 
@@ -14,9 +15,9 @@ use Roles\Support\PermissionInterface;
 interface HasPermissionsInterface
 {
     /**
-     * @return Role|null
+     * @return RoleCollection<Role>
      */
-    public function getRole(): ?Role;
+    public function getRoles(): RoleCollection;
 
     /**
      * @param Builder                         $query

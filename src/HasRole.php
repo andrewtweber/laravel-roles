@@ -4,6 +4,7 @@ namespace Roles;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Roles\Collections\RoleCollection;
 use Roles\Models\Role;
 use Roles\Support\PermissionInterface;
 
@@ -12,17 +13,19 @@ use Roles\Support\PermissionInterface;
  *
  * @package Roles
  *
- * @property int|null  $role_id
- * @property Role|null role
+ * @property ?int  $role_id
+ * @property ?Role $role
  */
 trait HasRole
 {
     /**
-     * @return Role|null
+     * @return RoleCollection
      */
-    public function getRole(): ?Role
+    public function getRoles(): RoleCollection
     {
-        return $this->role;
+        $class = config('roles.collections.role');
+
+        return new $class([$this->role]);
     }
 
     /**

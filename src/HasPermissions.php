@@ -2,9 +2,6 @@
 
 namespace Roles;
 
-use Roles\Support\AllPermissions;
-use Roles\Support\AnyPermission;
-use InvalidArgumentException;
 use Roles\Support\PermissionInterface;
 
 /**
@@ -21,11 +18,7 @@ trait HasPermissions
      */
     public function onlyPermissionIs(PermissionInterface|string $permission): bool
     {
-        if ($permission instanceof PermissionInterface) {
-            $permission = $permission->value;
-        }
-
-        return $this->getRole()?->permissions === [$permission];
+        return $this->getRoles()->onlyPermissionIs($permission);
     }
 
     /**
@@ -35,36 +28,7 @@ trait HasPermissions
      */
     public function hasPermission(mixed $permission): bool
     {
-        // No role assigned
-        if (! $this->getRole()) {
-            return false;
-        }
-
-        // Super admin
-        if (in_array('*', $this->getRole()->permissions)) {
-            return true;
-        }
-
-        if ($permission instanceof PermissionInterface) {
-            $permission = $permission->value;
-        }
-
-        // Single permission
-        if (is_string($permission)) {
-            return $this->hasSinglePermission($permission);
-        }
-
-        // Must have all permissions listed
-        if ($permission instanceof AllPermissions) {
-            return $this->hasAllPermissions($permission->permissions);
-        }
-
-        // May have any permission listed
-        if ($permission instanceof AnyPermission) {
-            return $this->hasAnyPermission($permission->permissions);
-        }
-
-        throw new InvalidArgumentException("Invalid permission type");
+        return $this->getRoles()->hasPermission($permission);
     }
 
     /**
@@ -74,13 +38,7 @@ trait HasPermissions
      */
     public function hasAllPermissions(array $permissions): bool
     {
-        foreach ($permissions as $permission) {
-            if (! $this->hasSinglePermission($permission)) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->getRoles()->hasAllPermissions($permissions);
     }
 
     /**
@@ -90,13 +48,7 @@ trait HasPermissions
      */
     public function hasAnyPermission(array $permissions): bool
     {
-        foreach ($permissions as $permission) {
-            if ($this->hasSinglePermission($permission)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->getRoles()->hasAnyPermission($permissions);
     }
 
     /**
@@ -106,35 +58,7 @@ trait HasPermissions
      */
     protected function hasSinglePermission(PermissionInterface|string $permission): bool
     {
-        // No role assigned
-        if (! $this->getRole()) {
-            return false;
-        }
-
-        if (in_array('*', $this->getRole()->permissions)) {
-            return true;
-        }
-
-        if ($permission instanceof PermissionInterface) {
-            $permission = $permission->value;
-        }
-
-        $permissions = [$permission];
-        $parts = explode('.', $permission);
-
-        if (last($parts) === '*') {
-            $permissions = [];
-            array_pop($parts);
-        }
-        $permission = '';
-
-        for ($i = 0; $i < count($parts); $i++) {
-            $permission .= $parts[$i] . '.';
-
-            $permissions[] = $permission . '*';
-        }
-
-        return count(array_intersect($permissions, $this->getRole()->permissions)) > 0;
+        return $this->getRoles()->hasSinglePermission($permission);
     }
 
     /**
@@ -142,9 +66,7 @@ trait HasPermissions
      */
     public function hasNoPermissions(): bool
     {
-        return ! $this->getRole()
-            || $this->getRole()->permissions === null
-            || $this->getRole()->permissions === [];
+        return $this->getRoles()->hasNoPermissions();
     }
 
     /**
@@ -152,6 +74,6 @@ trait HasPermissions
      */
     public function isSuper(): bool
     {
-        return $this->getRole()?->permissions === ['*'];
+        return $this->getRoles()->isSuper();
     }
 }

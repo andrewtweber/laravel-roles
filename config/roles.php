@@ -28,8 +28,20 @@ return [
     | class here.
     */
     'models' => [
-        'role' => \Role\Models\Role::class,
+        'role' => \Roles\Models\Role::class,
         'user' => \App\Models\User::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Collections
+    |--------------------------------------------------------------------------
+    |
+    | If you need to extend the collection classes you can do so and add your
+    | child class here.
+    */
+    'collections' => [
+        'role' => \Roles\Collections\RoleCollection::class,
     ],
 
 ];

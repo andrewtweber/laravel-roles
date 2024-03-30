@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Roles\Collections\RoleCollection;
 use Roles\HasPermissions;
 use Roles\HasPermissionsInterface;
 use Roles\Support\PermissionInterface;
@@ -17,13 +19,13 @@ use Roles\Support\PermissionInterface;
  *
  * @package Roles\Models
  *
- * @property int               $id
- * @property string            $name
- * @property array|string[]    $permissions
- * @property Carbon            $created_at
- * @property Carbon            $updated_at
+ * @property int              $id
+ * @property string           $name
+ * @property array<string>    $permissions
+ * @property Carbon           $created_at
+ * @property Carbon           $updated_at
  *
- * @property Collection|User[] users
+ * @property Collection<User> $users
  */
 class Role extends Model implements HasPermissionsInterface
 {
@@ -34,17 +36,19 @@ class Role extends Model implements HasPermissionsInterface
     ];
 
     /**
-     * @return Role
+     * @return RoleCollection<Role>
      */
-    public function getRole(): Role
+    public function getRoles(): RoleCollection
     {
-        return $this;
+        $class = config('roles.collections.role');
+
+        return new $class([$this]);
     }
 
     /**
-     * @return HasMany
+     * @return BelongsToMany|HasMany
      */
-    public function users(): HasMany
+    public function users(): BelongsToMany|HasMany
     {
         return $this->hasMany(config('roles.models.user'));
     }
